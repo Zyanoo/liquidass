@@ -7,6 +7,12 @@ This tweak is incomplete, issues WILL happen.
 >
 > contributions to this tweak are welcomed.
 
+this tweak compared to that LiquidGlassKit based tweak is missing a lot of things including:
+- music player
+- passcode buttons
+- control center
+- etc i havent even tried that tweak out yet
+
 ## Quick explanation on how this tweak works
 - right now the tweak takes an image of certain screen views then feed it to a Metal renderer, then draw the masked glass effect on top on the views (`LiquidGlassView`)
 - for iOS 15 and lower it usually uses the cpbitmaps in /var/mobile/Library/SpringBoard/ for the wallpaper and sometimes fallback to snapshotting the static wallpaper view (SBFStatic... smth i forgot)
