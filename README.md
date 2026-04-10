@@ -13,6 +13,8 @@ this tweak compared to that LiquidGlassKit based tweak is missing a lot of thing
 - control center
 - etc i havent even tried that tweak out yet
 
+**also, you MUST set a paired wallpaper (same wallpaper on HS and LS) if on iOS 16+**
+
 ## Quick explanation on how this tweak works
 - right now the tweak takes an image of certain screen views then feed it to a Metal renderer, then draw the masked glass effect on top on the views (`LiquidGlassView`)
 - for iOS 15 and lower it usually uses the cpbitmaps in /var/mobile/Library/SpringBoard/ for the wallpaper and sometimes fallback to snapshotting the static wallpaper view (SBFStatic... smth i forgot)
