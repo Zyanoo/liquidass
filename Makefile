@@ -19,7 +19,7 @@ include $(THEOS)/makefiles/tweak.mk
 SUBPROJECTS += LiquidAssPrefs
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
-.PHONY: sim remove
+.PHONY: sim remove release
 
 sim:: all
 	@rm -f /opt/simject/$(TWEAK_NAME).dylib
@@ -47,3 +47,5 @@ remove::
 	@rm -f /opt/simject/$(TWEAK_NAME).dylib /opt/simject/$(TWEAK_NAME).plist
 	@[ ! -d /opt/simject/PreferenceBundles/LiquidAssPrefs.bundle ] || rm -rf /opt/simject/PreferenceBundles/LiquidAssPrefs.bundle
 	@[ ! -f /opt/simject/PreferenceLoader/Preferences/LiquidAssPrefs.plist ] || rm -f /opt/simject/PreferenceLoader/Preferences/LiquidAssPrefs.plist
+
+# originally i tried to add `release::` here but apparently that keeps breaking for whatever fucking reason so i decided to create `release.sh`
