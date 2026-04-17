@@ -40,6 +40,8 @@ static void LGFolderOpenForEachMaterialHost(void (^block)(UIView *view));
 static void LGRestoreFolderOpenHost(UIView *view);
 static void LGDetachFolderOpenHost(UIView *view);
 static void LGHandleFolderOpenMaterialView(UIView *view, BOOL updateOnly);
+static BOOL LGIsPrimaryFolderOpenHost(UIView *view);
+static void LGStripFolderOpenTintFiltersFromLayerTree(CALayer *layer);
 
 static NSInteger sFolderCount = 0;
 static NSUInteger sFolderStopGeneration = 0;
@@ -70,6 +72,12 @@ static BOOL LGFolderOpenFilterLooksLikeTintFilter(id filter) {
     NSString *lower = name.lowercaseString;
     return ([lower containsString:@"vibrant"] ||
             [lower containsString:@"colormatrix"]);
+}
+
+static void LGStripFolderControllerBackgroundMaterialFiltersIfNeeded(UIView *view) {
+    if (!view) return;
+    if (![NSStringFromClass(view.superview.class) isEqualToString:@"SBFolderControllerBackgroundView"]) return;
+    LGStripFolderOpenTintFiltersFromLayerTree(view.layer);
 }
 
 static NSArray *LGFolderOpenCleanedFilterArray(NSArray *filters, BOOL *didRemoveAny) {
@@ -111,17 +119,17 @@ static void LGStripFolderOpenTintFiltersFromLayerTree(CALayer *layer) {
     }
 }
 
-static BOOL LGIsFolderControllerBackgroundMaterial(UIView *view) {
-    return view && [NSStringFromClass(view.superview.class) isEqualToString:@"SBFolderControllerBackgroundView"];
-}
-
 static void LGStripFolderOpenMaterialFiltersIfNeeded(UIView *view) {
-    if (!LGIsFolderControllerBackgroundMaterial(view)) return;
+    if (!view) return;
+    if (!isInsideOpenFolder(view)) return;
+    if (!LGIsPrimaryFolderOpenHost(view)) return;
     LGStripFolderOpenTintFiltersFromLayerTree(view.layer);
 }
 
 static void LGScheduleFolderOpenResanitize(UIView *view) {
-    if (!view || !LGIsFolderControllerBackgroundMaterial(view)) return;
+    if (!view) return;
+    if (!isInsideOpenFolder(view)) return;
+    if (!LGIsPrimaryFolderOpenHost(view)) return;
     if ([objc_getAssociatedObject(view, kFolderOpenResanitizePendingKey) boolValue]) return;
     objc_setAssociatedObject(view, kFolderOpenResanitizePendingKey, @YES, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.08 * NSEC_PER_SEC)),
@@ -302,6 +310,7 @@ static void LGFolderOpenForEachMaterialHost(void (^block)(UIView *view)) {
 
 static void LGHandleFolderOpenMaterialView(UIView *view, BOOL updateOnly) {
     if (!view) return;
+    LGStripFolderControllerBackgroundMaterialFiltersIfNeeded(view);
     if (!view.window) {
         LGDetachFolderOpenHost(view);
         return;
