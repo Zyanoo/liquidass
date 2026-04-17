@@ -476,7 +476,7 @@ NSArray<NSDictionary *> *LGContextMenuItems(void) {
 }
 
 NSArray<NSDictionary *> *LGLockscreenItems(void) {
-    return @[
+    NSMutableArray<NSDictionary *> *items = [NSMutableArray arrayWithArray:@[
         LGScopedFPSSliderSetting(@"Lockscreen.FPS"),
         LGSectionSetting(LGLocalized(@"prefs.section.lockscreen_notifications.title"), LGLocalized(@"prefs.section.lockscreen_notifications.subtitle")),
         LGGlassEnabledSetting(@"Lockscreen.Enabled", YES),
@@ -502,7 +502,55 @@ NSArray<NSDictionary *> *LGLockscreenItems(void) {
         LGGlassRefractionSetting(@"LockscreenQuickActions.RefractionScale", 1.2, 0.5, 2.5, 2),
         LGGlassSpecularSetting(@"LockscreenQuickActions.SpecularOpacity", 0.8, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"LockscreenQuickActions.WallpaperScale", 0.5, 0.1, 1.0, 2),
-    ];
+        LGSectionSetting(LGLocalized(@"prefs.section.lockscreen_clock.title"), LGLocalized(@"prefs.section.lockscreen_clock.subtitle")),
+        LGSwitchSetting(@"Lockscreen.Clock.Enabled",
+                        LGLocalized(@"prefs.misc.lockscreen_clock.title"),
+                        LGLocalized(@"prefs.misc.lockscreen_clock.subtitle"),
+                        NO),
+    ]];
+
+    [items addObject:LGGlassBezelSetting(@"Lockscreen.Clock.BezelWidth", 24.0, 0.0, 50.0, 1)];
+    [items addObject:LGGlassBlurSetting(@"Lockscreen.Clock.Blur", 3.0, 0.0, 50.0, 1)];
+    [items addObject:LGGlassLightTintSetting(@"Lockscreen.Clock.LightTintAlpha", 0.1, 0.0, 1.0, 2)];
+    [items addObject:LGGlassDarkTintSetting(@"Lockscreen.Clock.DarkTintAlpha", 0.0, 0.0, 1.0, 2)];
+    [items addObject:LGGlassThicknessSetting(@"Lockscreen.Clock.GlassThickness", 150.0, 0.0, 200.0, 1)];
+    [items addObject:LGGlassRefractiveIndexSetting(@"Lockscreen.Clock.RefractiveIndex", 1.5, 0.0, 5.0, 2)];
+    [items addObject:LGGlassRefractionSetting(@"Lockscreen.Clock.RefractionScale", 1.5, 0.0, 5.0, 2)];
+    [items addObject:LGGlassSpecularSetting(@"Lockscreen.Clock.SpecularOpacity", 0.8, 0.0, 1.0, 2)];
+    [items addObject:LGGlassQualitySetting(@"Lockscreen.Clock.WallpaperScale", 1.0, 0.1, 1.0, 2)];
+
+    if (!LGIsAtLeastiOS16()) {
+        [items addObject:LGSliderSetting(@"Lockscreen.Clock.LegacyFontWeight",
+                                         LGLocalized(@"prefs.control.font_weight"),
+                                         LGLocalized(@"prefs.subtitle.font_weight"),
+                                         UIFontWeightHeavy,
+                                         0.0,
+                                         1.0,
+                                         2)];
+        [items addObject:LGSliderSetting(@"Lockscreen.Clock.LegacySizeBoost",
+                                         LGLocalized(@"prefs.control.size_boost"),
+                                         LGLocalized(@"prefs.subtitle.size_boost"),
+                                         1.05,
+                                         0.8,
+                                         1.3,
+                                         2)];
+        [items addObject:LGSliderSetting(@"Lockscreen.Clock.LegacyEmbolden",
+                                         LGLocalized(@"prefs.control.embolden"),
+                                         LGLocalized(@"prefs.subtitle.embolden"),
+                                         0.35,
+                                         0.0,
+                                         1.0,
+                                         2)];
+        [items addObject:LGSliderSetting(@"Lockscreen.Clock.LegacyGap",
+                                         LGLocalized(@"prefs.control.clock_gap"),
+                                         LGLocalized(@"prefs.subtitle.clock_gap"),
+                                         8.0,
+                                         0.0,
+                                         24.0,
+                                         1)];
+    }
+
+    return [items copy];
 }
 
 NSArray<NSDictionary *> *LGAppLibraryItems(void) {
@@ -693,10 +741,6 @@ NSArray<NSDictionary *> *LGExperimentalItems(void) {
                       ]),
         LGSectionSetting(LGLocalized(@"prefs.section.experimental_features.title"),
                          LGLocalized(@"prefs.section.experimental_features.subtitle")),
-        LGSwitchSetting(@"Lockscreen.Clock.Enabled",
-                        LGLocalized(@"prefs.misc.lockscreen_clock.title"),
-                        LGLocalized(@"prefs.misc.lockscreen_clock.subtitle"),
-                        NO),
         LGSwitchSetting(@"SettingsControls.Enabled",
                         LGLocalized(@"prefs.misc.settings_controls.title"),
                         LGLocalized(@"prefs.misc.settings_controls.subtitle"),

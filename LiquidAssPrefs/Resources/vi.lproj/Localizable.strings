@@ -13,6 +13,10 @@
 "prefs.control.quality" = "Chất lượng";
 "prefs.control.fps_limit" = "Giới hạn FPS";
 "prefs.control.rendering_method" = "Phương thức render";
+"prefs.control.font_weight" = "Độ đậm font";
+"prefs.control.size_boost" = "Tăng kích thước";
+"prefs.control.embolden" = "Làm dày";
+"prefs.control.clock_gap" = "Khoảng cách đồng hồ";
 "prefs.control.floating_radius" = "Bo góc khi nổi";
 "prefs.control.full_screen_radius" = "Bo góc toàn màn hình";
 "prefs.control.home_button_radius" = "Bo góc cho máy có nút Home";
@@ -38,6 +42,10 @@
 "prefs.subtitle.icon_spacing" = "Khoảng cách giữa biểu tượng và nhãn.";
 "prefs.subtitle.row_inset" = "Lề trái và phải cho các hàng thao tác.";
 "prefs.subtitle.rendering_method" = "Chọn xem bề mặt này lấy mẫu từ snapshot đã lưu hay từ chụp nền trực tiếp.";
+"prefs.subtitle.font_weight" = "Độ đậm dùng cho đồng hồ kính kiểu cũ trên iOS 15 trở xuống.";
+"prefs.subtitle.size_boost" = "Phóng to đồng hồ kiểu cũ so với bố cục mặc định.";
+"prefs.subtitle.embolden" = "Làm dày giả mask đồng hồ kiểu cũ để nhìn đầy hơn.";
+"prefs.subtitle.clock_gap" = "Khoảng cách dọc giữa đồng hồ kiểu cũ và dòng ngày tháng.";
 "prefs.subtitle.global_enabled" = "Công tắc chính cho mọi bề mặt.";
 
 "prefs.rendering.snapshot.title" = "Snapshot";
@@ -105,6 +113,8 @@
 "prefs.section.banner.subtitle" = "Vật liệu và cách render cho banner thông báo phía trên.";
 "prefs.section.lockscreen_quick_actions.title" = "Thao tác nhanh";
 "prefs.section.lockscreen_quick_actions.subtitle" = "Vật liệu cho nút đèn pin và camera ở phía dưới.";
+"prefs.section.lockscreen_clock.title" = "Đồng hồ";
+"prefs.section.lockscreen_clock.subtitle" = "Điều khiển đồng hồ kính ở màn hình khóa.";
 "prefs.surface.app_library.title" = "App Library";
 "prefs.surface.app_library.subtitle" = "Vật liệu cho cụm danh mục và thanh tìm kiếm.";
 "prefs.misc.respring.title" = "Respring";
@@ -123,6 +133,6 @@
 "prefs.misc.debug_logging.title" = "Ghi log debug";
 "prefs.misc.debug_logging.subtitle" = "Bật log chẩn đoán chi tiết được ghi vào /tmp/LiquidAss.log";
 "prefs.misc.lockscreen_clock.title" = "Đồng hồ màn hình khóa";
-"prefs.misc.lockscreen_clock.subtitle" = "[THỬ NGHIỆM] Bật đồng hồ kính tùy chỉnh cho màn hình khóa trên iOS 16+.";
+"prefs.misc.lockscreen_clock.subtitle" = "Bật đồng hồ kính tùy chỉnh cho màn hình khóa.";
 "prefs.misc.settings_controls.title" = "Slider và switch trong Cài đặt";
 "prefs.misc.settings_controls.subtitle" = "[THỬ NGHIỆM] Bật các điều khiển liquid tùy chỉnh trong ứng dụng Cài đặt.";

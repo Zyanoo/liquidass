@@ -1,5 +1,6 @@
 #import "Common.h"
 #import "../../Shared/LGHookSupport.h"
+#import "../../Shared/LGPrefAccessors.h"
 #import <CoreText/CoreText.h>
 #import <objc/runtime.h>
 
@@ -8,6 +9,18 @@ static void *kLGClockOriginalAlphaKey = &kLGClockOriginalAlphaKey;
 static void *kLGClockOriginalLayerOpacityKey = &kLGClockOriginalLayerOpacityKey;
 static void *kLGClockScrollObserverKey = &kLGClockScrollObserverKey;
 static void *kLGClockScrollKVOContext = &kLGClockScrollKVOContext;
+
+LG_FLOAT_PREF_FUNC(LGClockBezelWidth, "Lockscreen.Clock.BezelWidth", 24.0)
+LG_FLOAT_PREF_FUNC(LGClockGlassThickness, "Lockscreen.Clock.GlassThickness", 150.0)
+LG_FLOAT_PREF_FUNC(LGClockRefractionScale, "Lockscreen.Clock.RefractionScale", 1.5)
+LG_FLOAT_PREF_FUNC(LGClockRefractiveIndex, "Lockscreen.Clock.RefractiveIndex", 1.5)
+LG_FLOAT_PREF_FUNC(LGClockSpecularOpacity, "Lockscreen.Clock.SpecularOpacity", 0.8)
+LG_FLOAT_PREF_FUNC(LGClockBlur, "Lockscreen.Clock.Blur", 3.0)
+LG_FLOAT_PREF_FUNC(LGClockWallpaperScale, "Lockscreen.Clock.WallpaperScale", 1.0)
+LG_FLOAT_PREF_FUNC(LGClockLegacyFontWeight, "Lockscreen.Clock.LegacyFontWeight", UIFontWeightHeavy)
+LG_FLOAT_PREF_FUNC(LGClockLegacySizeBoost, "Lockscreen.Clock.LegacySizeBoost", 1.05)
+LG_FLOAT_PREF_FUNC(LGClockLegacyEmbolden, "Lockscreen.Clock.LegacyEmbolden", 0.35)
+LG_FLOAT_PREF_FUNC(LGClockLegacyGap, "Lockscreen.Clock.LegacyGap", 8.0)
 
 static void LGSetLayerTreeOpacity(CALayer *layer, float opacity) {
     if (!layer) return;
@@ -19,29 +32,84 @@ static void LGSetLayerTreeOpacity(CALayer *layer, float opacity) {
 
 static BOOL LGClockEnabled(void) {
     return LGLockscreenEnabled()
-        && LGIsAtLeastiOS16()
         && LG_prefBool(@"Lockscreen.Clock.Enabled", NO);
 }
 
-static BOOL LGIsClockHost(UIView *view) {
+static BOOL LGIsModernClockHost(UIView *view) {
     static Class cls;
     if (!cls) cls = NSClassFromString(@"CSProminentTimeView");
     return cls && [view isKindOfClass:cls];
 }
 
-static BOOL LGIsClockSourceLabel(UIView *view) {
+static BOOL LGIsLegacyClockHost(UIView *view) {
+    static Class cls;
+    if (!cls) cls = NSClassFromString(@"SBFLockScreenDateView");
+    return cls && [view isKindOfClass:cls];
+}
+
+static BOOL LGIsClockHost(UIView *view) {
+    return LGIsModernClockHost(view) || LGIsLegacyClockHost(view);
+}
+
+static BOOL LGIsModernClockSourceLabel(UIView *view) {
     if (![view isKindOfClass:[UILabel class]]) return NO;
     return [NSStringFromClass(view.class) isEqualToString:@"_UIAnimatingLabel"]
         && LGHasAncestorClassNamed(view, @"CSProminentTimeView");
 }
 
+static BOOL LGIsLegacyClockTextLabel(UIView *view) {
+    if (![view isKindOfClass:[UILabel class]]) return NO;
+    if (!LGHasAncestorClassNamed(view, @"SBUILegibilityLabel")) return NO;
+    if (!LGHasAncestorClassNamed(view, @"SBFLockScreenDateView")) return NO;
+    UILabel *label = (UILabel *)view;
+    if (label.text.length == 0) return NO;
+    if (label.font.pointSize < 20.0) return NO;
+    return YES;
+}
+
 static NSArray<UILabel *> *LGClockSourceLabelsForHost(UIView *host) {
     NSMutableArray<UILabel *> *labels = [NSMutableArray array];
     LGTraverseViews(host, ^(UIView *view) {
-        if (LGIsClockSourceLabel(view))
+        if (LGIsModernClockSourceLabel(view) || LGIsLegacyClockTextLabel(view))
             [labels addObject:(UILabel *)view];
     });
     return labels;
+}
+
+static UIView *LGClockLegacyVisibleSourceViewForLabel(UILabel *label) {
+    UIView *cursor = label;
+    while (cursor) {
+        if ([NSStringFromClass(cursor.class) isEqualToString:@"SBUILegibilityLabel"]) {
+            return cursor;
+        }
+        cursor = cursor.superview;
+    }
+    return label;
+}
+
+static NSArray<UIView *> *LGClockVisibleSourceViewsForHost(UIView *host, UILabel *sourceLabel) {
+    NSMutableArray<UIView *> *views = [NSMutableArray array];
+    if (LGIsModernClockHost(host)) {
+        [views addObjectsFromArray:LGClockSourceLabelsForHost(host)];
+        return views;
+    }
+
+    if (LGIsLegacyClockHost(host) && sourceLabel) {
+        UIView *visibleSourceView = LGClockLegacyVisibleSourceViewForLabel(sourceLabel);
+        if (visibleSourceView) {
+            [views addObject:visibleSourceView];
+        }
+    }
+    return views;
+}
+
+static UIFont *LGClockPreferredRenderFont(UILabel *label, UIView *host) {
+    UIFont *sourceFont = label.font ?: [UIFont systemFontOfSize:84.0 weight:UIFontWeightBold];
+    if (LGIsLegacyClockHost(host)) {
+        CGFloat pointSize = MAX(sourceFont.pointSize * LGClockLegacySizeBoost(), 58.0);
+        return [UIFont systemFontOfSize:pointSize weight:LGClockLegacyFontWeight()];
+    }
+    return sourceFont;
 }
 
 static UIImage *LGClockWallpaperSource(void) {
@@ -93,13 +161,13 @@ static UIScrollView *LGClockAncestorScrollView(UIView *view) {
     _glassView = [[LiquidGlassView alloc] initWithFrame:self.bounds wallpaper:wallpaper wallpaperOrigin:origin];
     _glassView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _glassView.cornerRadius = 0.0;
-    _glassView.bezelWidth = 24.0;
-    _glassView.glassThickness = 150.0;
-    _glassView.refractionScale = 1.5;
-    _glassView.refractiveIndex = 1.5;
-    _glassView.specularOpacity = 0.8;
-    _glassView.blur = 3;
-    _glassView.wallpaperScale = 1.0;
+    _glassView.bezelWidth = LGClockBezelWidth();
+    _glassView.glassThickness = LGClockGlassThickness();
+    _glassView.refractionScale = LGClockRefractionScale();
+    _glassView.refractiveIndex = LGClockRefractiveIndex();
+    _glassView.specularOpacity = LGClockSpecularOpacity();
+    _glassView.blur = LGClockBlur();
+    _glassView.wallpaperScale = LGClockWallpaperScale();
     _glassView.releasesWallpaperAfterUpload = YES;
     _glassView.updateGroup = LGUpdateGroupLockscreen;
     [self addSubview:_glassView];
@@ -161,6 +229,10 @@ static UIScrollView *LGClockAncestorScrollView(UIView *view) {
     CGContextTranslateCTM(ctx, 0.0, bounds.size.height);
     CGContextScaleCTM(ctx, 1.0, -1.0);
 
+    UIView *host = self.superview;
+    while (host && !LGIsClockHost(host)) host = host.superview;
+    BOOL legacyHost = LGIsLegacyClockHost(host);
+
     NSAttributedString *attributed = [self lg_maskAttributedString];
     CTLineRef line = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)attributed);
 
@@ -183,8 +255,23 @@ static UIScrollView *LGClockAncestorScrollView(UIView *view) {
     }
     CGFloat lineHeight = ascent + descent + leading;
     CGFloat baseline = floor((bounds.size.height - lineHeight) * 0.5 + descent);
-    CGContextSetTextPosition(ctx, x, baseline);
-    CTLineDraw(line, ctx);
+    if (legacyHost) {
+        CGFloat embolden = MAX(0.0, LGClockLegacyEmbolden());
+        static const CGPoint offsets[] = {
+            {0.0, 0.0},
+            {-1.0, 0.0},
+            {1.0, 0.0},
+            {0.0, 1.0},
+            {0.0, -1.0},
+        };
+        for (NSUInteger i = 0; i < sizeof(offsets) / sizeof(offsets[0]); i++) {
+            CGContextSetTextPosition(ctx, x + offsets[i].x * embolden, baseline + offsets[i].y * embolden);
+            CTLineDraw(line, ctx);
+        }
+    } else {
+        CGContextSetTextPosition(ctx, x, baseline);
+        CTLineDraw(line, ctx);
+    }
 
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -214,11 +301,26 @@ static UIScrollView *LGClockAncestorScrollView(UIView *view) {
 
 - (void)syncFromSourceLabel:(UILabel *)label {
     if (!label) return;
-    self.frame = label.frame;
     self.displayText = label.text ?: @"";
-    self.displayAttributedText = label.attributedText;
-    self.displayFont = label.font ?: [UIFont systemFontOfSize:84.0 weight:UIFontWeightBold];
-    self.displayAlignment = label.textAlignment;
+    UIView *host = self.superview;
+    while (host && !LGIsClockHost(host)) host = host.superview;
+    if (LGIsLegacyClockHost(host)) {
+        self.frame = CGRectOffset(host.bounds, 0.0, -LGClockLegacyGap());
+        self.displayAlignment = NSTextAlignmentCenter;
+        self.displayAttributedText = nil;
+    } else {
+        self.frame = label.frame;
+        self.displayAlignment = label.textAlignment;
+        self.displayAttributedText = label.attributedText;
+    }
+    self.displayFont = LGClockPreferredRenderFont(label, host);
+    self.glassView.bezelWidth = LGClockBezelWidth();
+    self.glassView.glassThickness = LGClockGlassThickness();
+    self.glassView.refractionScale = LGClockRefractionScale();
+    self.glassView.refractiveIndex = LGClockRefractiveIndex();
+    self.glassView.specularOpacity = LGClockSpecularOpacity();
+    self.glassView.blur = LGClockBlur();
+    self.glassView.wallpaperScale = LGClockWallpaperScale();
     self.hidden = !self.displayText.length;
     [self setNeedsLayout];
 }
@@ -286,15 +388,15 @@ static UIScrollView *LGClockAncestorScrollView(UIView *view) {
 
 @end
 
-static void LGRestoreClockSourceLabel(UILabel *label) {
-    if (!label) return;
-    NSNumber *originalAlpha = objc_getAssociatedObject(label, kLGClockOriginalAlphaKey);
-    NSNumber *originalLayerOpacity = objc_getAssociatedObject(label, kLGClockOriginalLayerOpacityKey);
-    label.alpha = originalAlpha ? originalAlpha.doubleValue : 1.0;
-    label.layer.opacity = originalLayerOpacity ? originalLayerOpacity.floatValue : 1.0f;
-    LGSetLayerTreeOpacity(label.layer, label.layer.opacity);
-    objc_setAssociatedObject(label, kLGClockOriginalAlphaKey, nil, OBJC_ASSOCIATION_ASSIGN);
-    objc_setAssociatedObject(label, kLGClockOriginalLayerOpacityKey, nil, OBJC_ASSOCIATION_ASSIGN);
+static void LGRestoreClockSourceView(UIView *view) {
+    if (!view) return;
+    NSNumber *originalAlpha = objc_getAssociatedObject(view, kLGClockOriginalAlphaKey);
+    NSNumber *originalLayerOpacity = objc_getAssociatedObject(view, kLGClockOriginalLayerOpacityKey);
+    view.alpha = originalAlpha ? originalAlpha.doubleValue : 1.0;
+    view.layer.opacity = originalLayerOpacity ? originalLayerOpacity.floatValue : 1.0f;
+    LGSetLayerTreeOpacity(view.layer, view.layer.opacity);
+    objc_setAssociatedObject(view, kLGClockOriginalAlphaKey, nil, OBJC_ASSOCIATION_ASSIGN);
+    objc_setAssociatedObject(view, kLGClockOriginalLayerOpacityKey, nil, OBJC_ASSOCIATION_ASSIGN);
 }
 
 static void LGDetachClockScrollObserver(UIView *host) {
@@ -326,6 +428,7 @@ static void LGApplyClockReplacement(UIView *host) {
 
     NSArray<UILabel *> *sourceLabels = LGClockSourceLabelsForHost(host);
     UILabel *sourceLabel = sourceLabels.firstObject;
+    NSArray<UIView *> *visibleSourceViews = LGClockVisibleSourceViewsForHost(host, sourceLabel);
     LGClockGlassView *overlay = objc_getAssociatedObject(host, kLGClockOverlayKey);
 
     if (!LGClockEnabled() || !host.window || !sourceLabel) {
@@ -333,17 +436,17 @@ static void LGApplyClockReplacement(UIView *host) {
         objc_setAssociatedObject(host, kLGClockOverlayKey, nil, OBJC_ASSOCIATION_ASSIGN);
         LGDetachClockScrollObserver(host);
         LGDetachLockHostIfNeeded(host);
-        for (UILabel *label in sourceLabels) LGRestoreClockSourceLabel(label);
+        for (UIView *view in visibleSourceViews) LGRestoreClockSourceView(view);
         return;
     }
 
-    for (UILabel *label in sourceLabels) {
-        if (!objc_getAssociatedObject(label, kLGClockOriginalAlphaKey)) {
-            objc_setAssociatedObject(label, kLGClockOriginalAlphaKey, @(label.alpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-            objc_setAssociatedObject(label, kLGClockOriginalLayerOpacityKey, @(label.layer.opacity), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    for (UIView *view in visibleSourceViews) {
+        if (!objc_getAssociatedObject(view, kLGClockOriginalAlphaKey)) {
+            objc_setAssociatedObject(view, kLGClockOriginalAlphaKey, @(view.alpha), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            objc_setAssociatedObject(view, kLGClockOriginalLayerOpacityKey, @(view.layer.opacity), OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         }
-        label.alpha = 0.0;
-        LGSetLayerTreeOpacity(label.layer, 0.0f);
+        view.alpha = 0.0;
+        LGSetLayerTreeOpacity(view.layer, 0.0f);
     }
 
     if (!overlay) {
@@ -391,11 +494,25 @@ static void LGRefreshClockHosts(void) {
 
 %end
 
+%hook SBFLockScreenDateView
+
+- (void)didMoveToWindow {
+    %orig;
+    LGApplyClockReplacement((UIView *)self);
+}
+
+- (void)layoutSubviews {
+    %orig;
+    LGApplyClockReplacement((UIView *)self);
+}
+
+%end
+
 %hook UILabel
 
 - (void)setText:(NSString *)text {
     %orig;
-    if (LGIsClockSourceLabel((UIView *)self)) {
+    if (LGIsModernClockSourceLabel((UIView *)self) || LGIsLegacyClockTextLabel((UIView *)self)) {
         UIView *host = self.superview;
         while (host && !LGIsClockHost(host)) host = host.superview;
         if (host) LGApplyClockReplacement(host);
@@ -404,7 +521,7 @@ static void LGRefreshClockHosts(void) {
 
 - (void)setFont:(UIFont *)font {
     %orig;
-    if (LGIsClockSourceLabel((UIView *)self)) {
+    if (LGIsModernClockSourceLabel((UIView *)self) || LGIsLegacyClockTextLabel((UIView *)self)) {
         UIView *host = self.superview;
         while (host && !LGIsClockHost(host)) host = host.superview;
         if (host) LGApplyClockReplacement(host);

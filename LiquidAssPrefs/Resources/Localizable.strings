@@ -13,6 +13,10 @@
 "prefs.control.quality" = "Quality";
 "prefs.control.fps_limit" = "FPS Limit";
 "prefs.control.rendering_method" = "Rendering Method";
+"prefs.control.font_weight" = "Font Weight";
+"prefs.control.size_boost" = "Size Boost";
+"prefs.control.embolden" = "Embolden";
+"prefs.control.clock_gap" = "Clock Gap";
 "prefs.control.floating_radius" = "Floating Radius";
 "prefs.control.full_screen_radius" = "Full Screen Radius";
 "prefs.control.home_button_radius" = "Home Button Radius";
@@ -38,6 +42,10 @@
 "prefs.subtitle.icon_spacing" = "Gap between icon and label.";
 "prefs.subtitle.row_inset" = "Left and right padding for action rows.";
 "prefs.subtitle.rendering_method" = "Choose whether this surface samples from cached snapshots or live backdrop capture.";
+"prefs.subtitle.font_weight" = "Weight used for the legacy iOS 15 and lower glass clock.";
+"prefs.subtitle.size_boost" = "Scales the legacy clock size relative to the stock layout.";
+"prefs.subtitle.embolden" = "Artificially thickens the legacy clock mask for a fuller look.";
+"prefs.subtitle.clock_gap" = "Vertical gap between the legacy clock and the date text.";
 "prefs.subtitle.global_enabled" = "Master switch for every surface.";
 
 "prefs.rendering.snapshot.title" = "Snapshot";
@@ -105,6 +113,8 @@
 "prefs.section.banner.subtitle" = "Top notification banner materials and rendering.";
 "prefs.section.lockscreen_quick_actions.title" = "Quick Actions";
 "prefs.section.lockscreen_quick_actions.subtitle" = "Bottom flashlight and camera button materials.";
+"prefs.section.lockscreen_clock.title" = "Clock";
+"prefs.section.lockscreen_clock.subtitle" = "Custom lockscreen glass clock controls.";
 "prefs.surface.app_library.title" = "App Library";
 "prefs.surface.app_library.subtitle" = "Category pods and search field materials.";
 "prefs.misc.respring.title" = "Respring";
@@ -121,8 +131,8 @@
 "prefs.misc.app_library_composite.title" = "AL samples app icons";
 "prefs.misc.app_library_composite.subtitle" = "Also samples homescreen icons and not just the wallpaper in App Library. Accurate to iOS 26 but can look weird on certain setups.";
 "prefs.misc.debug_logging.title" = "Debug Logging";
-"prefs.misc.debug_logging.subtitle" = "Enable verbose diagnostic logs written through LGDebugLog.";
+"prefs.misc.debug_logging.subtitle" = "Enable verbose diagnostic logs written to /tmp/LiquidAss.log";
 "prefs.misc.lockscreen_clock.title" = "Lockscreen Clock";
-"prefs.misc.lockscreen_clock.subtitle" = "[EXPERIMENTAL] Enable the custom iOS 16+ lockscreen glass clock.";
+"prefs.misc.lockscreen_clock.subtitle" = "Enable the custom lockscreen glass clock.";
 "prefs.misc.settings_controls.title" = "Settings Sliders and Switches";
 "prefs.misc.settings_controls.subtitle" = "[EXPERIMENTAL] Enable the custom liquid controls inside the Settings app.";
