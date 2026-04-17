@@ -106,10 +106,6 @@
 "prefs.misc.options_section.subtitle" = "Các tính năng thử nghiệm và vài tùy chọn khác.";
 "prefs.misc.language.title" = "Ngôn ngữ";
 "prefs.misc.language.subtitle" = "Chọn ngôn ngữ cho giao diện tuỳ chọn này.";
-"prefs.misc.language.english.title" = "English";
-"prefs.misc.language.english.subtitle" = "Dùng bản dịch tiếng Anh.";
-"prefs.misc.language.vietnamese.title" = "Tiếng Việt";
-"prefs.misc.language.vietnamese.subtitle" = "Dùng bản dịch tiếng Việt.";
 "prefs.misc.app_library_composite.title" = "AL lấy mẫu cả icon app";
 "prefs.misc.app_library_composite.subtitle" = "Trong App Library sẽ lấy mẫu cả icon ở Homescreen chứ không chỉ wallpaper. Chính xác hơn với iOS 26 nhưng có thể nhìn hơi lạ ở vài setup.";
 "prefs.misc.lockscreen_clock.title" = "Đồng hồ màn hình khóa";

@@ -106,10 +106,6 @@
 "prefs.misc.options_section.subtitle" = "Experimental features and other stuff.";
 "prefs.misc.language.title" = "Language";
 "prefs.misc.language.subtitle" = "Select the language for this preferences UI.";
-"prefs.misc.language.english.title" = "English";
-"prefs.misc.language.english.subtitle" = "Use the English localization.";
-"prefs.misc.language.vietnamese.title" = "Tiếng Việt";
-"prefs.misc.language.vietnamese.subtitle" = "Use the Vietnamese localization.";
 "prefs.misc.app_library_composite.title" = "AL samples app icons";
 "prefs.misc.app_library_composite.subtitle" = "Also samples homescreen icons and not just the wallpaper in App Library. Accurate to iOS 26 but can look weird on certain setups.";
 "prefs.misc.lockscreen_clock.title" = "Lockscreen Clock";

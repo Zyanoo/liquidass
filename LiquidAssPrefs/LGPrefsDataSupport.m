@@ -29,6 +29,56 @@ static NSBundle *LGActiveLocalizationBundle(void) {
     return localizedBundle ?: baseBundle;
 }
 
+static NSString *LGDisplayNameForLanguageCode(NSString *languageCode) {
+    if (!languageCode.length) return @"";
+    if ([languageCode isEqualToString:@"en"]) return @"English";
+
+    NSLocale *displayLocale = [NSLocale currentLocale];
+    NSString *localeIdentifier = [NSLocale canonicalLocaleIdentifierFromString:languageCode];
+    NSString *name = [displayLocale displayNameForKey:NSLocaleIdentifier value:localeIdentifier];
+    if (!name.length) {
+        NSDictionary *components = [NSLocale componentsFromLocaleIdentifier:localeIdentifier];
+        NSString *baseLanguageCode = components[NSLocaleLanguageCode];
+        if (baseLanguageCode.length) {
+            name = [displayLocale localizedStringForLanguageCode:baseLanguageCode];
+        }
+    }
+    return name.length ? name : languageCode;
+}
+
+static NSArray<NSDictionary *> *LGAvailableLanguageChoices(void) {
+    static NSArray<NSDictionary *> *choices;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        NSBundle *baseBundle = [NSBundle bundleForClass:[LGPRootListController class]];
+        NSMutableOrderedSet<NSString *> *codes = [NSMutableOrderedSet orderedSetWithObject:@"en"];
+        for (NSString *path in [baseBundle pathsForResourcesOfType:@"lproj" inDirectory:nil]) {
+            NSString *languageCode = [[path lastPathComponent] stringByDeletingPathExtension];
+            if (languageCode.length && ![languageCode isEqualToString:@"Base"]) {
+                [codes addObject:languageCode];
+            }
+        }
+
+        NSMutableArray<NSDictionary *> *dynamicChoices = [NSMutableArray arrayWithCapacity:codes.count];
+        for (NSString *languageCode in codes) {
+            [dynamicChoices addObject:@{
+                @"value": languageCode,
+                @"title": LGDisplayNameForLanguageCode(languageCode)
+            }];
+        }
+
+        [dynamicChoices sortUsingComparator:^NSComparisonResult(NSDictionary *lhs, NSDictionary *rhs) {
+            NSString *leftValue = lhs[@"value"];
+            NSString *rightValue = rhs[@"value"];
+            if ([leftValue isEqualToString:@"en"]) return NSOrderedAscending;
+            if ([rightValue isEqualToString:@"en"]) return NSOrderedDescending;
+            return [lhs[@"title"] localizedCaseInsensitiveCompare:rhs[@"title"]];
+        }];
+        choices = [dynamicChoices copy];
+    });
+    return choices;
+}
+
 Class LGPrefsSwitchClass(void) {
     return NSClassFromString(@"LGPrefsLiquidSwitch") ?: [UISwitch class];
 }
@@ -511,10 +561,7 @@ NSArray<NSDictionary *> *LGMoreOptionsItems(void) {
                       LGLocalized(@"prefs.misc.language.title"),
                       @"",
                       @"en",
-                      @[
-                          @{@"value": @"en", @"title": LGLocalized(@"prefs.misc.language.english.title")},
-                          @{@"value": @"vi", @"title": LGLocalized(@"prefs.misc.language.vietnamese.title")}
-                      ]),
+                      LGAvailableLanguageChoices()),
         LGSectionSetting(LGLocalized(@"prefs.misc.options_section.title"),
                          LGLocalized(@"prefs.misc.options_section.subtitle")),
         LGSwitchSetting(@"AppLibrary.CompositeSnapshot",
