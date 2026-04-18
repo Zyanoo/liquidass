@@ -27,8 +27,10 @@ SUBPROJECTS += LiquidAssPrefs
 include $(THEOS_MAKE_PATH)/aggregate.mk
 
 .PHONY: sim remove release release-all release-rootless release-rootful release-roothide
+.NOTPARALLEL: release release-all release-rootless release-rootful release-roothide
 
 RELEASE_FLAGS = FINALPACKAGE=1 FOR_RELEASE=1 THEOS_SCHEMA= DEBUG= PACKAGE_BUILDNAME=
+RELEASE_PREP = rm -rf .theos/_ .theos/_tmp arm64 arm64e
 
 SET_PLIST_LABEL = python3 -c 'exec("import os, plistlib, sys\nlabel = sys.argv[1]\nfor path in sys.argv[2:]:\n    if not os.path.exists(path):\n        continue\n    with open(path, \"rb\") as f:\n        data = plistlib.load(f)\n    if isinstance(data, dict):\n        entry = data.setdefault(\"entry\", {})\n        if isinstance(entry, dict):\n            entry[\"label\"] = label\n    with open(path, \"wb\") as f:\n        plistlib.dump(data, f)\n    print(\"Updated \" + path)")'
 
@@ -72,24 +74,24 @@ remove::
 
 release: release-all
 
-release-all: release-rootless release-rootful release-roothide
+release-all:
+	@$(MAKE) --no-print-directory release-rootless
+	@$(MAKE) --no-print-directory release-rootful
+	@$(MAKE) --no-print-directory release-roothide
 	@echo "All release builds completed."
 
 release-rootless:
 	@echo "Building rootless package..."
-	@$(MAKE) clean ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS) THEOS_PACKAGE_SCHEME=rootless
-	@$(MAKE) all ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS) THEOS_PACKAGE_SCHEME=rootless
-	@$(MAKE) package ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS) THEOS_PACKAGE_SCHEME=rootless
+	@$(RELEASE_PREP)
+	@$(MAKE) clean package ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS) THEOS_PACKAGE_SCHEME=rootless
 
 release-rootful:
 	@echo "Building rootful package..."
-	@$(MAKE) clean ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS)
-	@$(MAKE) all ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS)
-	@$(MAKE) package ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS)
+	@$(RELEASE_PREP)
+	@$(MAKE) clean package ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS)
 
 release-roothide:
 	@echo "Building roothide package..."
 	@echo "Note: roothide builds require the roothide Theos fork."
-	@$(MAKE) clean ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS) THEOS_PACKAGE_SCHEME=roothide
-	@$(MAKE) all ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS) THEOS_PACKAGE_SCHEME=roothide
-	@$(MAKE) package ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS) THEOS_PACKAGE_SCHEME=roothide
+	@$(RELEASE_PREP)
+	@$(MAKE) clean package ARCHS="arm64 arm64e" TARGET="iphone:clang:latest:14.0" $(RELEASE_FLAGS) THEOS_PACKAGE_SCHEME=roothide
