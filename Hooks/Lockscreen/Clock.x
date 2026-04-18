@@ -44,6 +44,7 @@ static BOOL LGIsModernClockHost(UIView *view) {
 }
 
 static BOOL LGIsLegacyClockHost(UIView *view) {
+    if (LGIsAtLeastiOS16()) return NO;
     static Class cls;
     if (!cls) cls = NSClassFromString(@"SBFLockScreenDateView");
     return cls && [view isKindOfClass:cls];
