@@ -17,7 +17,7 @@ This tweak is incomplete, issues WILL happen.
 - quick actions buttons
 - app library
 - settings app switches and sliders (experimental, causes crash with back-navigation)
-- clock (experimental)
+- clock
 
 ## Quick explanation on how this tweak works
 - the tweak injects a `LiquidGlassView` into specific springboard surfaces, then feeds that view a backdrop source plus screenspace origin data
