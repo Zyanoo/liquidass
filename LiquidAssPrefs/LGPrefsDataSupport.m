@@ -423,7 +423,7 @@ NSArray<NSDictionary *> *LGDockItems(void) {
         LGGlassLightTintSetting(@"Dock.LightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"Dock.RefractiveIndex", 1.5, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"Dock.RefractionScale", 1.5, 0.5, 3.0, 2),
-        LGGlassSpecularSetting(@"Dock.SpecularOpacity", 0.5, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"Dock.SpecularOpacity", 0.3, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"Dock.WallpaperScale", 0.25, 0.1, 1.0, 2),
     ];
 }
@@ -440,7 +440,7 @@ NSArray<NSDictionary *> *LGFolderItems(void) {
         LGGlassLightTintSetting(@"FolderIcon.LightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"FolderIcon.RefractiveIndex", 2.0, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"FolderIcon.RefractionScale", 2.0, 0.5, 3.0, 2),
-        LGGlassSpecularSetting(@"FolderIcon.SpecularOpacity", 0.8, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"FolderIcon.SpecularOpacity", 0.6, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"FolderIcon.WallpaperScale", 0.5, 0.1, 1.0, 2),
         LGSectionSetting(LGLocalized(@"prefs.section.folder_open.title"), LGLocalized(@"prefs.section.folder_open.subtitle")),
         LGGlassEnabledSetting(@"FolderOpen.Enabled", YES),
@@ -452,7 +452,7 @@ NSArray<NSDictionary *> *LGFolderItems(void) {
         LGGlassLightTintSetting(@"FolderOpen.LightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"FolderOpen.RefractiveIndex", 1.2, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"FolderOpen.RefractionScale", 1.8, 0.5, 3.0, 2),
-        LGGlassSpecularSetting(@"FolderOpen.SpecularOpacity", 0.8, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"FolderOpen.SpecularOpacity", 0.6, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"FolderOpen.WallpaperScale", 0.1, 0.1, 1.0, 2),
     ];
 }
@@ -469,7 +469,7 @@ NSArray<NSDictionary *> *LGAppIconItems(void) {
         LGGlassLightTintSetting(@"AppIcons.LightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"AppIcons.RefractiveIndex", 1.0, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"AppIcons.RefractionScale", 1.2, 0.5, 3.0, 2),
-        LGGlassSpecularSetting(@"AppIcons.SpecularOpacity", 0.8, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"AppIcons.SpecularOpacity", 0.6, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"AppIcons.WallpaperScale", 0.5, 0.1, 1.0, 2),
     ];
 }
@@ -486,7 +486,7 @@ NSArray<NSDictionary *> *LGSearchPillItems(void) {
         LGGlassLightTintSetting(@"SearchPill.LightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"SearchPill.RefractiveIndex", 1.5, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"SearchPill.RefractionScale", 1.5, 0.5, 3.0, 2),
-        LGGlassSpecularSetting(@"SearchPill.SpecularOpacity", 0.8, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"SearchPill.SpecularOpacity", 0.6, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"SearchPill.WallpaperScale", 0.1, 0.1, 1.0, 2),
     ];
 }
@@ -504,7 +504,7 @@ NSArray<NSDictionary *> *LGContextMenuItems(void) {
         LGGlassRefractiveIndexSetting(@"ContextMenu.RefractiveIndex", 1.2, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"ContextMenu.RefractionScale", 1.8, 0.5, 3.0, 2),
         LGSliderSetting(@"ContextMenu.RowInset", LGLocalized(@"prefs.control.row_inset"), LGLocalized(@"prefs.subtitle.row_inset"), 16.0, 0.0, 30.0, 1),
-        LGGlassSpecularSetting(@"ContextMenu.SpecularOpacity", 1.0, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"ContextMenu.SpecularOpacity", 0.8, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"ContextMenu.WallpaperScale", 0.1, 0.1, 1.0, 2),
     ];
 }
@@ -522,7 +522,7 @@ NSArray<NSDictionary *> *LGLockscreenItems(void) {
         LGGlassLightTintSetting(@"Lockscreen.LightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"Lockscreen.RefractiveIndex", 1.0, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"Lockscreen.RefractionScale", 1.2, 0.5, 2.5, 2),
-        LGGlassSpecularSetting(@"Lockscreen.SpecularOpacity", 0.8, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"Lockscreen.SpecularOpacity", 0.6, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"Lockscreen.WallpaperScale", 0.5, 0.1, 1.0, 2),
         LGSectionSetting(LGLocalized(@"prefs.section.lockscreen_quick_actions.title"), LGLocalized(@"prefs.section.lockscreen_quick_actions.subtitle")),
         LGGlassEnabledSetting(@"LockscreenQuickActions.Enabled", YES),
@@ -534,7 +534,7 @@ NSArray<NSDictionary *> *LGLockscreenItems(void) {
         LGGlassLightTintSetting(@"LockscreenQuickActions.LightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"LockscreenQuickActions.RefractiveIndex", 1.0, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"LockscreenQuickActions.RefractionScale", 1.2, 0.5, 2.5, 2),
-        LGGlassSpecularSetting(@"LockscreenQuickActions.SpecularOpacity", 0.8, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"LockscreenQuickActions.SpecularOpacity", 0.6, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"LockscreenQuickActions.WallpaperScale", 0.5, 0.1, 1.0, 2),
         LGSectionSetting(LGLocalized(@"prefs.section.lockscreen_clock.title"), LGLocalized(@"prefs.section.lockscreen_clock.subtitle")),
         LGSwitchSetting(@"Lockscreen.Clock.Enabled",
@@ -550,7 +550,7 @@ NSArray<NSDictionary *> *LGLockscreenItems(void) {
     [items addObject:LGGlassThicknessSetting(@"Lockscreen.Clock.GlassThickness", 150.0, 0.0, 200.0, 1)];
     [items addObject:LGGlassRefractiveIndexSetting(@"Lockscreen.Clock.RefractiveIndex", 1.5, 0.0, 5.0, 2)];
     [items addObject:LGGlassRefractionSetting(@"Lockscreen.Clock.RefractionScale", 1.5, 0.0, 5.0, 2)];
-    [items addObject:LGGlassSpecularSetting(@"Lockscreen.Clock.SpecularOpacity", 0.8, 0.0, 1.0, 2)];
+    [items addObject:LGGlassSpecularSetting(@"Lockscreen.Clock.SpecularOpacity", 0.6, 0.0, 1.0, 2)];
     [items addObject:LGGlassQualitySetting(@"Lockscreen.Clock.WallpaperScale", 1.0, 0.1, 1.0, 2)];
 
     if (!LGIsAtLeastiOS16()) {
@@ -600,7 +600,7 @@ NSArray<NSDictionary *> *LGAppLibraryItems(void) {
         LGGlassLightTintSetting(@"AppLibrary.LightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"AppLibrary.RefractiveIndex", 1.2, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"AppLibrary.RefractionScale", 1.8, 0.5, 3.0, 2),
-        LGGlassSpecularSetting(@"AppLibrary.SpecularOpacity", 0.8, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"AppLibrary.SpecularOpacity", 0.6, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"AppLibrary.WallpaperScale", 0.1, 0.1, 1.0, 2),
         LGSectionSetting(LGLocalized(@"prefs.section.search_field.title"), LGLocalized(@"prefs.section.search_field.subtitle")),
         LGGlassEnabledSetting(@"AppLibrary.Search.Enabled", YES),
@@ -612,7 +612,7 @@ NSArray<NSDictionary *> *LGAppLibraryItems(void) {
         LGGlassLightTintSetting(@"AppLibrary.SearchLightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"AppLibrary.SearchRefractiveIndex", 1.5, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"AppLibrary.SearchRefractionScale", 1.5, 0.5, 3.0, 2),
-        LGGlassSpecularSetting(@"AppLibrary.SearchSpecularOpacity", 0.8, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"AppLibrary.SearchSpecularOpacity", 0.6, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"AppLibrary.SearchWallpaperScale", 0.1, 0.1, 1.0, 2),
     ];
 }
@@ -628,7 +628,7 @@ NSArray<NSDictionary *> *LGWidgetItems(void) {
         LGGlassLightTintSetting(@"Widgets.LightTintAlpha", 0.1, 0.0, 1.0, 2),
         LGGlassRefractiveIndexSetting(@"Widgets.RefractiveIndex", 1.2, 1.0, 2.0, 2),
         LGGlassRefractionSetting(@"Widgets.RefractionScale", 1.8, 0.5, 3.0, 2),
-        LGGlassSpecularSetting(@"Widgets.SpecularOpacity", 0.8, 0.0, 1.0, 2),
+        LGGlassSpecularSetting(@"Widgets.SpecularOpacity", 0.6, 0.0, 1.0, 2),
         LGGlassQualitySetting(@"Widgets.WallpaperScale", 0.5, 0.1, 1.0, 2),
     ];
 }

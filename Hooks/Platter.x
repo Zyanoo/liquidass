@@ -416,7 +416,7 @@ void LGLockscreenRefreshAllHosts(void) {
                                                                LG_prefFloat(@"LockscreenQuickActions.GlassThickness", 80.0),
                                                                LG_prefFloat(@"LockscreenQuickActions.RefractionScale", 1.2),
                                                                LG_prefFloat(@"LockscreenQuickActions.RefractiveIndex", 1.0),
-                                                               LG_prefFloat(@"LockscreenQuickActions.SpecularOpacity", 0.8),
+                                                               LG_prefFloat(@"LockscreenQuickActions.SpecularOpacity", 0.6),
                                                                LG_prefFloat(@"LockscreenQuickActions.Blur", 8.0),
                                                                LG_prefFloat(@"LockscreenQuickActions.WallpaperScale", 0.5),
                                                                LG_prefFloat(@"LockscreenQuickActions.LightTintAlpha", 0.1),

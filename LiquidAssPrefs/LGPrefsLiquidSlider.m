@@ -475,7 +475,7 @@ static UIImage *LGRenderSliderBackdropImage(CGSize size,
     glass.glassThickness = 30.0;
     glass.refractionScale = 1.2;
     glass.refractiveIndex = 1.5;
-    glass.specularOpacity = 0.24;
+    glass.specularOpacity = 0.04;
     glass.blur = 0.0;
     glass.sourceScale = 1.0;
     glass.layer.shadowColor = UIColor.blackColor.CGColor;
@@ -512,7 +512,7 @@ static UIImage *LGRenderSliderBackdropImage(CGSize size,
     self.contractedThumbView.backgroundColor = LGSliderIdleThumbColor(self.traitCollection);
     self.contractedThumbView.layer.shadowOpacity = 0.12;
     self.contractedThumbView.layer.shadowRadius = 5.0;
-    self.glassThumbView.specularOpacity = darkMode ? 0.22 : 0.16;
+    self.glassThumbView.specularOpacity = darkMode ? 0.02 : 0.0;
     self.glassThumbView.layer.shadowOpacity = darkMode ? 0.12 : 0.08;
     self.glassThumbView.layer.shadowRadius = darkMode ? 7.0 : 4.0;
     self.glassThumbView.layer.shadowOffset = darkMode ? CGSizeMake(0.0, 2.0) : CGSizeMake(0.0, 1.0);

@@ -6,7 +6,7 @@ LG_FLOAT_PREF_FUNC(LGLockscreenQuickActionsBezelWidth, "LockscreenQuickActions.B
 LG_FLOAT_PREF_FUNC(LGLockscreenQuickActionsGlassThickness, "LockscreenQuickActions.GlassThickness", 80.0)
 LG_FLOAT_PREF_FUNC(LGLockscreenQuickActionsRefractionScale, "LockscreenQuickActions.RefractionScale", 1.2)
 LG_FLOAT_PREF_FUNC(LGLockscreenQuickActionsRefractiveIndex, "LockscreenQuickActions.RefractiveIndex", 1.0)
-LG_FLOAT_PREF_FUNC(LGLockscreenQuickActionsSpecularOpacity, "LockscreenQuickActions.SpecularOpacity", 0.8)
+LG_FLOAT_PREF_FUNC(LGLockscreenQuickActionsSpecularOpacity, "LockscreenQuickActions.SpecularOpacity", 0.6)
 LG_FLOAT_PREF_FUNC(LGLockscreenQuickActionsBlur, "LockscreenQuickActions.Blur", 8.0)
 LG_FLOAT_PREF_FUNC(LGLockscreenQuickActionsWallpaperScale, "LockscreenQuickActions.WallpaperScale", 0.5)
 LG_FLOAT_PREF_FUNC(LGLockscreenQuickActionsLightTintAlpha, "LockscreenQuickActions.LightTintAlpha", 0.1)

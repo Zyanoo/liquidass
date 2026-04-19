@@ -255,7 +255,7 @@ static UIImage *LGRenderSwitchBackdropImage(CGSize size,
     glass.glassThickness = 20.0;
     glass.refractionScale = 1.5;
     glass.refractiveIndex = 1.5;
-    glass.specularOpacity = 0.24;
+    glass.specularOpacity = 0.04;
     glass.blur = 0.0;
     glass.sourceScale = 1.0;
     glass.alpha = 0.0;
@@ -618,7 +618,7 @@ static UIImage *LGRenderSwitchBackdropImage(CGSize size,
     self.glassThumbView.layer.shadowOpacity = darkMode ? 0.12 : 0.08;
     self.glassThumbView.layer.shadowRadius = darkMode ? 7.0 : 4.0;
     self.glassThumbView.layer.shadowOffset = darkMode ? CGSizeMake(0.0, 2.0) : CGSizeMake(0.0, 1.0);
-    self.glassThumbView.specularOpacity = darkMode ? 0.22 : 0.16;
+    self.glassThumbView.specularOpacity = darkMode ? 0.02 : 0.0;
     self.glassInsetShadowView.alpha = darkMode ? 0.68 : 1.0;
 }
 
