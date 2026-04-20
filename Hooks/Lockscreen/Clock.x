@@ -84,7 +84,12 @@ static NSString *sClockVariablePostScriptName = nil;
 static CGFontRef sClockVariableCGFont = NULL;
 static CTFontRef LGClockVariableCTFont(CGFloat pointSize);
 static CTFontRef LGClockVariableCTFontForHeight(CGFloat pointSize, CGFloat heightValue);
-static CGRect LGClockExpandedModernFrameForRect(CGRect frame, UIView *host, UIFont *font, id ctFontObject);
+static CGRect LGClockExpandedModernFrameForRect(CGRect frame,
+                                                UIView *host,
+                                                NSString *text,
+                                                UIFont *font,
+                                                id ctFontObject,
+                                                NSTextAlignment alignment);
 static void LGApplyClockReplacement(UIView *host);
 
 static NSHashTable<UIView *> *LGClockHostRegistry(void) {
@@ -475,7 +480,12 @@ static CGFloat LGClockModernGlyphBottomForSourceFrame(CGRect sourceFrame,
                                                       CGFloat topInset) {
     if (CGRectIsEmpty(sourceFrame) || text.length == 0 || !font) return CGRectGetMaxY(sourceFrame);
 
-    CGRect expanded = LGClockExpandedModernFrameForRect(sourceFrame, nil, font, ctFontObject);
+    CGRect expanded = LGClockExpandedModernFrameForRect(sourceFrame,
+                                                        nil,
+                                                        text,
+                                                        font,
+                                                        ctFontObject,
+                                                        NSTextAlignmentCenter);
     NSDictionary *attrs = @{
         (__bridge id)kCTFontAttributeName: ctFontObject ?: font,
         (__bridge id)kCTForegroundColorAttributeName: (__bridge id)UIColor.whiteColor.CGColor,
@@ -566,7 +576,12 @@ static CGFloat LGClockDynamicHeightAxisForContext(UILabel *label,
     return floor(low);
 }
 
-static CGRect LGClockExpandedModernFrameForRect(CGRect frame, UIView *host, UIFont *font, id ctFontObject) {
+static CGRect LGClockExpandedModernFrameForRect(CGRect frame,
+                                                UIView *host,
+                                                NSString *text,
+                                                UIFont *font,
+                                                id ctFontObject,
+                                                NSTextAlignment alignment) {
     if (CGRectIsEmpty(frame)) return frame;
 
     CGFloat resolvedLineHeight = MAX(CGRectGetHeight(frame), LGClockResolvedLineHeight(font, ctFontObject));
@@ -574,7 +589,36 @@ static CGRect LGClockExpandedModernFrameForRect(CGRect frame, UIView *host, UIFo
     CGRect expanded = frame;
     expanded.size.height += extraBottom;
 
+    CGFloat textWidth = LGClockLineWidthForText(text, font, ctFontObject);
+    CGFloat desiredWidth = MAX(CGRectGetWidth(expanded), textWidth + 18.0);
+    if (desiredWidth > CGRectGetWidth(expanded)) {
+        CGFloat delta = desiredWidth - CGRectGetWidth(expanded);
+        switch (alignment) {
+            case NSTextAlignmentRight:
+                expanded.origin.x -= delta;
+                break;
+            case NSTextAlignmentLeft:
+            case NSTextAlignmentNatural:
+            case NSTextAlignmentJustified:
+                break;
+            case NSTextAlignmentCenter:
+            default:
+                expanded.origin.x -= floor(delta * 0.5);
+                break;
+        }
+        expanded.size.width = desiredWidth;
+    }
+
     if (host) {
+        CGFloat minX = CGRectGetMinX(host.bounds);
+        CGFloat maxX = CGRectGetMaxX(host.bounds);
+        if (CGRectGetMinX(expanded) < minX) {
+            expanded.origin.x = minX;
+        }
+        if (CGRectGetMaxX(expanded) > maxX) {
+            CGFloat overflow = CGRectGetMaxX(expanded) - maxX;
+            expanded.size.width = MAX(0.0, expanded.size.width - overflow);
+        }
         CGFloat minY = CGRectGetMinY(host.bounds);
         CGFloat maxY = CGRectGetMaxY(host.bounds);
         if (CGRectGetMinY(expanded) < minY) {
@@ -595,7 +639,12 @@ static CGRect LGClockExpandedLegacyFrameForRect(CGRect frame,
                                                 id ctFontObject) {
     if (CGRectIsEmpty(frame)) return frame;
 
-    CGRect expanded = LGClockExpandedModernFrameForRect(frame, nil, font, ctFontObject);
+    CGRect expanded = LGClockExpandedModernFrameForRect(frame,
+                                                        nil,
+                                                        text,
+                                                        font,
+                                                        ctFontObject,
+                                                        NSTextAlignmentCenter);
     CGFloat textWidth = LGClockLineWidthForText(text, font, ctFontObject);
     CGFloat desiredWidth = MAX(CGRectGetWidth(expanded), textWidth + 18.0);
     if (desiredWidth > CGRectGetWidth(expanded)) {
@@ -627,7 +676,12 @@ static UIView *LGClockBestModernOverlayContainer(UIView *host, UILabel *label, U
 
     for (UIView *candidate = host.superview; candidate; candidate = candidate.superview) {
         CGRect sourceFrame = [label convertRect:label.bounds toView:candidate];
-        CGRect expanded = LGClockExpandedModernFrameForRect(sourceFrame, nil, font, ctFontObject);
+        CGRect expanded = LGClockExpandedModernFrameForRect(sourceFrame,
+                                                            nil,
+                                                            label.text,
+                                                            font,
+                                                            ctFontObject,
+                                                            label.textAlignment);
         BOOL fitsVertically = CGRectGetMinY(expanded) >= 0.0 && CGRectGetMaxY(expanded) <= CGRectGetHeight(candidate.bounds);
         BOOL fitsHorizontally = CGRectGetMinX(expanded) >= -1.0 && CGRectGetMaxX(expanded) <= CGRectGetWidth(candidate.bounds) + 1.0;
         if (!LGClockContainerClips(candidate) && fitsVertically && fitsHorizontally) {
@@ -895,7 +949,12 @@ static UIView *LGClockBestModernOverlayContainer(UIView *host, UILabel *label, U
         id renderFontObject = renderCTFont ? (__bridge_transfer id)renderCTFont : nil;
         self.displayCTFont = renderFontObject;
         self.displayFont = renderFontObject ? (UIFont *)renderFontObject : LGClockPreferredRenderFont(label, host);
-        self.frame = LGClockExpandedModernFrameForRect(sourceFrame, container, self.displayFont, self.displayCTFont);
+        self.frame = LGClockExpandedModernFrameForRect(sourceFrame,
+                                                       container,
+                                                       self.displayText,
+                                                       self.displayFont,
+                                                       self.displayCTFont,
+                                                       label.textAlignment);
         self.displayAlignment = label.textAlignment;
         self.displayAttributedText = label.attributedText;
         self.displayTopInset = MAX(0.0, CGRectGetMinY(label.bounds));
